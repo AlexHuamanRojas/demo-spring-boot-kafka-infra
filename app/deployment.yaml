@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: demo-spring-boot-kafka
+  namespace: demo
+
+spec:
+
+  replicas: 1
+
+  selector:
+
+    matchLabels:
+      app: demo-spring-boot-kafka
+
+  template:
+
+    metadata:
+
+      labels:
+        app: demo-spring-boot-kafka
+
+    spec:
+
+      containers:
+
+        - name: app
+
+          image: demo-spring-boot-kafka:1.0
+
+          imagePullPolicy: Never
+
+          ports:
+
+            - containerPort: 8080
+
+          envFrom:
+
+            - configMapRef:
+                name: demo-config

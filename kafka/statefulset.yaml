@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+
+metadata:
+  name: kafka
+  namespace: kafka
+
+spec:
+
+  serviceName: kafka
+
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: kafka
+
+  template:
+
+    metadata:
+      labels:
+        app: kafka
+
+    spec:
+
+      containers:
+
+        - name: kafka
+
+          image: apache/kafka:4.1.0
+
+          ports:
+
+            - containerPort: 9092
+
+            - containerPort: 9093
+
+          envFrom:
+
+            - configMapRef:
+                name: kafka-config
+
+          volumeMounts:
+
+            - name: kafka-storage
+
+              mountPath: /var/lib/kafka/data
+
+      volumes:
+
+        - name: kafka-storage
+
+          persistentVolumeClaim:
+
+            claimName: kafka-pvc

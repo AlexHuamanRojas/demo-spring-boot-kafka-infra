@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: demo-config
+  namespace: demo
+
+data:
+
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka.kafka.svc.cluster.local:9092
+
+  DEMO_SERVICIO_EXTERNO_BASE_URL: http://localhost:8081
