@@ -1,0 +1,15 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+
+metadata:
+  name: demo-knative-consumer
+  namespace: demo
+
+spec:
+  template:
+    spec:
+      containers:
+        - image: docker.io/library/demo-knative-consumer:1.3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080

@@ -1,0 +1,4 @@
+kubectl patch configmap config-deployment -n knative-serving --type merge -p '{"data":{"registries-skipping-tag-resolving":"docker.io"}}'
+
+
+kubectl get configmap config-deployment -n knative-serving -o jsonpath='{.data.registries-skipping-tag-resolving}'

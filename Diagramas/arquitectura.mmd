@@ -1,0 +1,49 @@
+
+flowchart TB
+
+    subgraph K8S["CLUSTER KUBERNETES"]
+        
+        subgraph NSK["Namespace: kafka"]
+            KAFKA["Apache Kafka Broker<br/>Servicio: kafka<br/>Puerto: 9092"]
+            KAFKAUI["Kafka UI<br/>Interfaz de administración<br/>Visualización de Topics y mensajes"]
+            KAFKAUI -->|"Consulta y administración"| KAFKA
+        end
+
+        subgraph KNATIVE["Infraestructura Knative"]
+            SERVING["Knative Serving<br/>Gestión de servicios y revisiones<br/>Escalado automático"]
+            EVENTING["Knative Eventing<br/>Infraestructura de eventos"]
+            KS["KafkaSource<br/>Topic: cliente-knative<br/>Consumer Group: knative-demo-group"]
+            ACTIVATOR["Knative Activator<br/>Activación de la aplicación"]
+        end
+
+        subgraph NSD["Namespace: demo"]
+            KNSVC["Knative Service<br/>demo-knative-consumer"]
+            
+            subgraph REV["Revisión desplegada"]
+                POD["Pod de la aplicación<br/>Contenedor Docker"]
+                JAVA["Java 25<br/>Spring Boot 4.1.2<br/>Puerto 8080"]
+                CONTROLLER["KnativeConsumerController<br/>Endpoint POST /"]
+                SERVICE["KnativeConsumerService<br/>Procesamiento del mensaje"]
+                LOGS["Logs de aplicación"]
+                
+                POD --> JAVA
+                JAVA --> CONTROLLER
+                CONTROLLER --> SERVICE
+                SERVICE --> LOGS
+            end
+
+            KNSVC -->|"Gestiona revisiones y Pods"| POD
+        end
+
+        KAFKA -->|"Consumo de mensajes"| KS
+        EVENTING -.->|"Integra fuentes de eventos"| KS
+        KS -->|"CloudEvent HTTP<br/>Value + Ce-Key + metadatos"| ACTIVATOR
+        ACTIVATOR -->|"Activación / enrutamiento HTTP"| KNSVC
+        SERVING -.->|"Gestiona el ciclo de vida"| KNSVC
+    end
+
+    PRODUCER["Productor Kafka<br/>Publicación de mensajes"]
+    PRODUCER -->|"Publica Key + Value"| KAFKA
+
+    CLIENT["Operador / Administrador"]
+    CLIENT -->|"Acceso a interfaz web"| KAFKAUI

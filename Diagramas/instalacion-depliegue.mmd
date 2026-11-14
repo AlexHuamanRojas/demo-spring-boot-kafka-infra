@@ -1,0 +1,46 @@
+
+flowchart TD
+
+    DEV["Desarrollo Java<br/>IntelliJ IDEA"]
+    CODE["Proyecto Maven<br/>Java 25<br/>Spring Boot 4.1.2"]
+    BUILD["Maven Build<br/>mvn clean package"]
+    IMAGE["Docker Build<br/>demo-knative-consumer:1.3"]
+    IMPORT["Importación de imagen<br/>Docker → containerd"]
+    
+    K8S["Cluster Kubernetes"]
+
+    INSTALL["Instalación de Knative<br/>Mediante manifiestos y comandos"]
+    SERVING["Knative Serving"]
+    EVENTING["Knative Eventing"]
+    KAFKAINSTALL["Instalación de Kafka"]
+    UIINSTALL["Instalación de Kafka UI"]
+
+    YAML1["YAML: Knative Service"]
+    YAML2["YAML: KafkaSource"]
+
+    DEPLOY["Aplicación desplegada<br/>Namespace: demo"]
+    SOURCE["KafkaSource desplegado<br/>Topic: cliente-knative"]
+    BROKER["Kafka Broker<br/>Namespace: kafka"]
+
+    DEV --> CODE
+    CODE --> BUILD
+    BUILD --> IMAGE
+    IMAGE --> IMPORT
+
+    K8S --> INSTALL
+    INSTALL --> SERVING
+    INSTALL --> EVENTING
+
+    K8S --> KAFKAINSTALL
+    K8S --> UIINSTALL
+    KAFKAINSTALL --> BROKER
+
+    IMPORT --> YAML1
+    SERVING --> YAML1
+    YAML1 --> DEPLOY
+
+    EVENTING --> YAML2
+    BROKER --> YAML2
+    YAML2 --> SOURCE
+
+    DEPLOY -.->|"Destino HTTP"| SOURCE

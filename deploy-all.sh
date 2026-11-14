@@ -14,5 +14,7 @@ kubectl apply -f kafka-ui/
 
 kubectl apply -f app/
 
+kubectl apply -f app-knative/
+
 echo ""
 echo "Despliegue completado"

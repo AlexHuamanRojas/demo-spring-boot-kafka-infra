@@ -1,0 +1,21 @@
+apiVersion: sources.knative.dev/v1beta1
+kind: KafkaSource
+
+metadata:
+  name: cliente-knative-source-v2
+  namespace: demo
+
+spec:
+  consumerGroup: knative-demo-group
+
+  bootstrapServers:
+    - kafka.kafka.svc.cluster.local:9092
+
+  topics:
+    - cliente-knative
+
+  sink:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: demo-knative-consumer

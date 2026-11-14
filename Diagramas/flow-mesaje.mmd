@@ -1,0 +1,32 @@
+
+sequenceDiagram
+    autonumber
+
+    participant P as Productor Kafka
+    participant K as Kafka Broker
+    participant KS as Knative KafkaSource
+    participant A as Knative Activator
+    participant S as Knative Serving
+    participant APP as Spring Boot
+    participant C as Controller
+    participant SV as Service
+
+    P->>K: Publica mensaje (Key + Value)
+    Note over K: Topic: cliente-knative
+
+    KS->>K: Consume mensaje
+    K-->>KS: Key + Value + Offset + Partition
+
+    KS->>A: Envía CloudEvent HTTP
+    Note over KS,A: Ce-Key, Ce-Id,<br/>Ce-Knativekafkaoffset
+
+    A->>S: Solicita activación/enrutamiento
+    S->>APP: Activa o enruta a la revisión
+    APP->>C: POST /
+    C->>C: Obtiene Key y Value
+    C->>SV: ejecutar(payload)
+    SV->>SV: Procesa el mensaje
+    SV-->>APP: Finaliza procesamiento
+    APP-->>KS: Respuesta HTTP 200
+
+    Note over APP,SV: Logs de recepción y procesamiento
