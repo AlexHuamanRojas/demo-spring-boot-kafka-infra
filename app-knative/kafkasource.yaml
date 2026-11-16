@@ -19,3 +19,4 @@ spec:
       apiVersion: serving.knative.dev/v1
       kind: Service
       name: demo-knative-consumer
+    uri: /api/clientes

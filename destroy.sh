@@ -2,6 +2,7 @@
 
 echo "Eliminando aplicación..."
 kubectl delete -f app/ --ignore-not-found
+kubectl delete -f app-knative/ --ignore-not-found
 
 echo "Eliminando kafka-ui..."
 kubectl delete -f kafka-ui/ --ignore-not-found
